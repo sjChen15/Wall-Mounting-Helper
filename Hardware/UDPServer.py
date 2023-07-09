@@ -1,6 +1,5 @@
-#!/usr/bin/env python3
-
 #Ref: https://stackoverflow.com/questions/64642122/how-to-send-real-time-sensor-data-to-pc-from-raspberry-pi-zero
+
 import socket
 from struct import unpack
 

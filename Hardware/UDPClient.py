@@ -1,5 +1,6 @@
+#Ref: https://stackoverflow.com/questions/64642122/how-to-send-real-time-sensor-data-to-pc-from-raspberry-pi-zero
+
 import socket
-import sys
 from time import sleep
 import random
 from struct import pack

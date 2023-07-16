@@ -1,6 +1,10 @@
 import pygame
 import sensorProcessingPi
 from pygameConsts import *
+
+sensors = sensorProcessingPi.SensorProcessing()
+
+
 #Initalize Pygame
 pygame.init()
 
@@ -12,7 +16,7 @@ WIDTH, HEIGHT = screen.get_size()
 CENTER_X, CENTER_Y = WIDTH // 2, HEIGHT // 2
 
 #Test display
-x,y,z = sensorProcessingPi.getSensorData()
+x,y,z = sensors.getSensorData()
 font = pygame.font.Font(pygame.font.get_default_font(), 32)
 text = font.render(f'{x} {y} {z}', True, BLACK)
 textRect = text.get_rect()
@@ -22,6 +26,11 @@ textRect.center = (CENTER_X, CENTER_Y - 200)
 vert_rect = pygame.Rect(CENTER_X-2,CENTER_Y-8,4,16)
 hori_rect = pygame.Rect(CENTER_X-8,CENTER_Y-2,16,4)
 
+
+def cleanup():
+    pygame.quit()
+    sensors.closeSocket()
+    
 run = True
 while run:
     #Fill display screen
@@ -40,6 +49,10 @@ while run:
             pygame.quit()
             run = False
         elif event.type == pygame.KEYDOWN:
-            pygame.quit()
-            run = False
-    
+            if event.key == pygame.K_SPACE: #if space pressed send data over UDP
+                sensors.sendDataOverUDP()
+            else:    
+                pygame.quit()
+                run = False
+
+

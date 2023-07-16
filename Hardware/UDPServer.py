@@ -3,20 +3,24 @@
 import socket
 from struct import unpack
 
-# Create a UDP socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+class ServerSocket:
+    def __init__(self, ip, port):
+        self.UDP_IP = ip
+        self.UDP_PORT = port
+        self.socketOpen
+    
+    def socketOpen(self):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.bind((self.UDP_IP, self.UDP_PORT))
+        print(u'Server socket [ UDP_IP: ' + self.UDP_IP + ', UDP_PORT: ' + str(self.UDP_PORT) + ' ] is open')
 
-# Bind the socket to the port
-host, port = '0.0.0.0', 65000
-server_address = (host, port)
+    def socketClose(self):
+        self.sock.close()
+        print(u'Server socket [ UDP_IP: ' + self.UDP_IP + ', UDP_PORT: ' + str(self.UDP_PORT) + ' ] is closed')
 
-print(f'Starting UDP server on {host} port {port}')
-sock.bind(server_address)
+    def waitForMessage(self):
+        message, address = self.sock.recvfrom(4096)
+        print(f'Received {len(message)} from {address}')
+        x, y, z = unpack('3f', message)
+        print(f'X: {x}, Y: {y}, Z: {z}')
 
-while True:
-    # Wait for message
-    message, address = sock.recvfrom(4096)
-
-    print(f'Received {len(message)} bytes:')
-    x, y, z = unpack('3f', message)
-    print(f'X: {x}, Y: {y}, Z: {z}')

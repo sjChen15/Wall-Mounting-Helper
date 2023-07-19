@@ -1,0 +1,28 @@
+import socket
+
+
+def send_image(host, port, image_path):
+    # Create a TCP socket
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    # Connect to the server
+    client_socket.connect((host, port))
+    print("Connected!")
+
+    # Read the image data
+    with open(image_path, "rb") as file:
+        image_data = file.read()
+
+    # Send the image data
+    client_socket.sendall(image_data)
+    print("Image sent!")
+
+    # Close the socket
+    client_socket.close()
+
+
+# Usage
+host = "localhost"  # Specify the server host
+port = 9999  # Specify the server port
+image_path = "img.png"  # Specify the path to the image file
+send_image(host, port, image_path)

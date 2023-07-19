@@ -2,27 +2,17 @@
 
 import socket
 from time import sleep
-import random
 from struct import pack
 
-#Create a UDP socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-host, port = '10.0.0.47', 65000
-server_address = (host, port)
-
-#Generate some random start vals
-x, y, z = random.random(), random.random(), random.random()
-
-# Send a few vals
-for i in range(10):
+class ClientSocket:
+    def __init__(self, ip, port):
+        self.UDP_SERVER_IP = ip
+        self.UDP_SERVER_PORT = port
     
-    #Pack three 32-bit floats into message and send
-    message = pack('3f', x, y, z)
-    sock.sendto(message, server_address)
+    def sendMessageToServer(self, message):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.sendto(message, (self.UDP_SERVER_IP,self.UDP_SERVER_PORT))
+        print(u'Message sent to Server Socket [UDP_SERVER_IP: ' + self.UDP_SERVER_IP + ', UDP_SERVER_PORT: ' + str(self.UDP_SERVER_PORT) + ' ]')
     
-    sleep(1)
-    x += 1
-    y += 1
-    z += 1
-    
+    def closeSocket(self):
+        self.sock.close()

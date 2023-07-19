@@ -2,21 +2,49 @@
 
 import socket
 from struct import unpack
+import sys
+import socket
+import errno
+from time import sleep
 
-# Create a UDP socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+class ServerSocket:
+    def __init__(self, ip, port):
+        self.UDP_IP = ip
+        self.UDP_PORT = port
+        self.socketOpen()
+    
+    def socketOpen(self):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.bind((self.UDP_IP, self.UDP_PORT))
 
-# Bind the socket to the port
-host, port = '0.0.0.0', 65000
-server_address = (host, port)
+        #non-blocking
+        self.sock.setblocking(0)            
 
-print(f'Starting UDP server on {host} port {port}')
-sock.bind(server_address)
+        #timeout
+        self.sock.settimeout(2)
+        print(u'Server socket [ UDP_IP: ' + self.UDP_IP + ', UDP_PORT: ' + str(self.UDP_PORT) + ' ] is open')
 
-while True:
-    # Wait for message
-    message, address = sock.recvfrom(4096)
+    def closeSocket(self):
+        self.sock.close()
+        print(u'Server socket [ UDP_IP: ' + self.UDP_IP + ', UDP_PORT: ' + str(self.UDP_PORT) + ' ] is closed')
 
-    print(f'Received {len(message)} bytes:')
-    x, y, z = unpack('3f', message)
-    print(f'X: {x}, Y: {y}, Z: {z}')
+    def waitForMessage(self):
+        #Ref: https://stackoverflow.com/questions/16745409/what-does-pythons-socket-recv-return-for-non-blocking-sockets-if-no-data-is-r
+        try:
+            message, address = self.sock.recvfrom(4096)
+        except socket.error as e:
+            err = e.args[0]
+            # if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
+            #     sleep(1)
+            #     print ('No data available')
+            if err == "timed out": #timed out goes here
+                print ('No data available')
+            else:
+                # a "real" error occurred
+                print (e)
+        else:
+            # got a message, do something :)
+            print(f'Received {len(message)} from {address}')
+            x, y, z = unpack('3f', message)
+            print(f'X: {x}, Y: {y}, Z: {z}')
+

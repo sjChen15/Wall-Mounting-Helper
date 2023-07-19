@@ -22,7 +22,7 @@ def send_image(host, port, image_path):
 
 
 # Usage
-host = "localhost"  # Specify the server host
+host = "10.0.0.86"  # Specify the server host
 port = 9999  # Specify the server port
 image_path = "img.png"  # Specify the path to the image file
 send_image(host, port, image_path)

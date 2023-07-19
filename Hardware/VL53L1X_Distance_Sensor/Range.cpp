@@ -12,9 +12,10 @@ int main()
 {
 	
 	
-   bool status;  
+cout << "HELLOOOO" << endl;   
+bool status;  
    status = Distance_Sensor.begin();
-  // cout << status << endl;
+   cout << status << endl;
   int counter = 0;
   int rate = 0;
   double time = 0;

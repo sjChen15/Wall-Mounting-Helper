@@ -10,15 +10,15 @@ pygame.init()
 
 #Create Window with custom title
 pygame.display.set_caption("Wall Mounting Helper")
-screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-#screen = pygame.display.set_mode((400,200))
+#screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+screen = pygame.display.set_mode((1200,800))
 WIDTH, HEIGHT = screen.get_size()
 CENTER_X, CENTER_Y = WIDTH // 2, HEIGHT // 2
 
 #Test display
-x,y,z = sensors.getSensorData()
 font = pygame.font.Font(pygame.font.get_default_font(), 32)
-text = font.render(f'{x} {y} {z}', True, BLACK)
+d = sensors.getSensorData()
+text = font.render(f'{d}', True, BLACK)
 textRect = text.get_rect()
 textRect.center = (CENTER_X, CENTER_Y - 200)
 
@@ -50,7 +50,8 @@ while run:
             run = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE: #if space pressed send data over UDP
-                sensors.sendDataOverUDP()
+                d = sensors.sendDataOverUDP()
+                text = font.render(f'{d}', True, BLACK)
             else:    
                 pygame.quit()
                 run = False

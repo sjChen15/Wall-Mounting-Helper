@@ -12,7 +12,7 @@ class ClientSocket:
     def sendMessageToServer(self, message):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.sendto(message, (self.UDP_SERVER_IP,self.UDP_SERVER_PORT))
-        print(u'Message sent to Server Socket [UDP_SERVER_IP: ' + self.UDP_SERVER_PORT + ', UDP_SERVER_PORT: ' + str(self.UDP_SERVER_PORT) + ' ]')
+        print(u'Message sent to Server Socket [UDP_SERVER_IP: ' + self.UDP_SERVER_IP + ', UDP_SERVER_PORT: ' + str(self.UDP_SERVER_PORT) + ' ]')
     
     def closeSocket(self):
         self.sock.close()

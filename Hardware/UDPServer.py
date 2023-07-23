@@ -11,6 +11,7 @@ class ServerSocket:
     def __init__(self, ip, port):
         self.UDP_IP = ip
         self.UDP_PORT = port
+        self.picam_image_filename ="imgs/pi_cam_img.jpg"
         self.socketOpen()
     
     def socketOpen(self):
@@ -20,7 +21,7 @@ class ServerSocket:
         #non-blocking
         self.sock.setblocking(0)            
 
-        #timeout
+        #Time out after 2 seconds
         self.sock.settimeout(2)
         print(u'Server socket [ UDP_IP: ' + self.UDP_IP + ', UDP_PORT: ' + str(self.UDP_PORT) + ' ] is open')
 
@@ -31,7 +32,7 @@ class ServerSocket:
     def waitForMessage(self):
         #Ref: https://stackoverflow.com/questions/16745409/what-does-pythons-socket-recv-return-for-non-blocking-sockets-if-no-data-is-r
         try:
-            message, address = self.sock.recvfrom(4096)
+            message, address = self.sock.recvfrom(40960000) #TODO: see how large the image is
         except socket.error as e:
             err = e.args[0]
             # if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
@@ -44,7 +45,20 @@ class ServerSocket:
                 print (e)
         else:
             # got a message, do something :)
-            print(f'Received {len(message)} from {address}')
-            x, y, z = unpack('3f', message)
-            print(f'X: {x}, Y: {y}, Z: {z}')
+
+            # Data
+            if(len(message) <= 100): #TODO: SEE HOW LONG a message is
+
+                print(f'Received {len(message)} from {address}')
+                d = unpack('1f', message)
+                print(f'Distance = {d} cm')
+
+            # Image
+            else: 
+                myfile = open(self.picam_image_filename, 'wb')
+
+                if not message:
+                    myfile.close()
+                myfile.write(message)
+                myfile.close()
 

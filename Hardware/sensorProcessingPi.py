@@ -13,12 +13,18 @@ class SensorProcessing:
     def __init__(self):
         self.udp_client = UDPClient.ClientSocket(IP,UDP_PORT)
         
-        #distance sensor setup
+        #PiCamera Setup
+        self.picam_image_filename = "imgs/pi_cam_img.jpg"
+        # Distance sensor setup
         i2c = board.I2C()
         self.distance_sensor = adafruit_vl53l1x.VL53L1X(i2c)
         self.distance_sensor.start_ranging()
 
-    def getSensorData(self):
+
+    def getSensorData(self, picamera):
+        # Take picture
+        picamera.capture_file(self.picam_image_filename)
+
         if self.distance_sensor.data_ready:
             distance = self.distance_sensor.distance
             if distance == None:
@@ -30,8 +36,14 @@ class SensorProcessing:
 
     def sendDataOverUDP(self):
         d = self.getSensorData()
+
+        #Send sensor readings
         message = pack('1f', d)
         self.udp_client.sendMessageToServer(message)
+
+        #Send picture
+        self.udp_client.sendImageToServer(self.picam_image_filename)
+
         return d
 
     def closeSocket(self):

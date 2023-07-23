@@ -77,10 +77,7 @@ while run:
             run = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE: #if space pressed send data over UDP
-                #take a picture
-                picam.capture_file("test-python.jpg")
-                
-                d = sensors.sendDataOverUDP()
+                d = sensors.sendDataOverUDP(picam)
                 text = font.render(f'{d}', True, BLACK)
             else:    
                 pygame.quit()

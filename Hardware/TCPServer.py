@@ -15,6 +15,12 @@ class ServerSocket:
     def socketOpenAndReceiveImage(self, save_path):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.bind((self.TCP_IP, self.TCP_PORT))
+        #non-blocking
+        self.sock.setblocking(0)            
+
+        #Time out after 2 seconds
+        self.sock.settimeout(2)
+        
         self.sock.listen(1)
         print(u'Server socket [ TCP_IP: ' + self.TCP_IP + ', TCP_PORT: ' + str(self.TCP_PORT) + ' ] is open')
         self.client_socket, self.addr = self.sock.accept()

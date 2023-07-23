@@ -8,7 +8,7 @@ class ClientSocket:
         self.TCP_SERVER_PORT = port
         self.connectCount = 0
 
-    def send_image(self, image_path):
+    def sendImage(self, image_path):
         # Create a TCP socket
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 

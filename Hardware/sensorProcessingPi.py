@@ -1,5 +1,6 @@
 #program to capture sensor data and send over UDP
 import UDPClient
+import TCPClient
 from time import sleep
 import random
 from struct import pack
@@ -7,12 +8,13 @@ import board, time, adafruit_vl53l1x
 
 IP = '10.0.0.47'
 UDP_PORT = 65000
-
+TCP_PORT = 12345
 class SensorProcessing:
 
     def __init__(self, picamera):
         self.udp_client = UDPClient.ClientSocket(IP,UDP_PORT)
-        
+        self.tcp_client = TCPClient.ClientSocket(IP,TCP_PORT)
+
         #PiCamera Setup
         self.cam = picamera
         self.picam_image_filename = "imgs/pi_cam_img.jpg"
@@ -43,7 +45,7 @@ class SensorProcessing:
         self.udp_client.sendMessageToServer(message)
 
         #Send picture
-        self.udp_client.sendImageToServer(self.picam_image_filename)
+        self.tcp_client.sendImage(self.picam_image_filename)
 
         return d
 

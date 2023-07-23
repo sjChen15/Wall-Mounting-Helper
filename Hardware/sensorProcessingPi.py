@@ -21,6 +21,9 @@ class SensorProcessing:
     def getSensorData(self):
         if self.distance_sensor.data_ready:
             distance = self.distance_sensor.distance
+            if distance == None:
+                print("Nonetype distance, try again")
+                return 0
             print("Distance: {0} cm, {1: .2f} in".format(distance, distance*0.394))
             self.distance_sensor.clear_interrupt()
         return distance

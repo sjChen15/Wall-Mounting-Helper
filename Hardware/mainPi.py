@@ -1,9 +1,12 @@
 import pygame
 import sensorProcessingPi
 from pygameConsts import *
+import os
+import glob
+import time
+from picamera2 import Picamera2, Preview
 
 sensors = sensorProcessingPi.SensorProcessing()
-
 
 #Initalize Pygame
 pygame.init()
@@ -26,30 +29,57 @@ textRect.center = (CENTER_X, CENTER_Y - 200)
 vert_rect = pygame.Rect(CENTER_X-2,CENTER_Y-8,4,16)
 hori_rect = pygame.Rect(CENTER_X-8,CENTER_Y-2,16,4)
 
+#camera
+
+picam = Picamera2()
+config = picam.create_preview_configuration()
+picam.configure(config)
+picam.start()
+
+#image from computer
+img = ""
 
 def cleanup():
     pygame.quit()
     sensors.closeSocket()
-    
+    picam.close()
+
+
+latest_filename = "" #filename of the last pulled image    
 run = True
 while run:
     #Fill display screen
     screen.fill(WHITE) #White background
 
+    #Picture
+    if img != "":
+        screen.blit(img, (100,100))
     #Test text
     screen.blit(text, textRect)
 
     #Crosshair
     pygame.draw.rect(screen, RED, vert_rect)
     pygame.draw.rect(screen, RED, hori_rect)
+    
+    
+    #every loop pull most recent picture that's been saved abd display
     pygame.display.update()
     
+    
+    folder_most_recent_file = max(glob.glob('/home/fydp/Documents/Wall-Mounting-Helper/Hardware/imgs/*'), key=os.path.getmtime)
+    if len(os.listdir('/home/fydp/Documents/Wall-Mounting-Helper/Hardware/imgs')) != 0 and folder_most_recent_file != latest_filename:
+        img = pygame.image.load(folder_most_recent_file)
+        latest_filename = folder_most_recent_file
+        
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             run = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE: #if space pressed send data over UDP
+                #take a picture
+                picam.capture_file("test-python.jpg")
+                
                 d = sensors.sendDataOverUDP()
                 text = font.render(f'{d}', True, BLACK)
             else:    

@@ -10,10 +10,11 @@ UDP_PORT = 65000
 
 class SensorProcessing:
 
-    def __init__(self):
+    def __init__(self, picamera):
         self.udp_client = UDPClient.ClientSocket(IP,UDP_PORT)
         
         #PiCamera Setup
+        self.cam = picamera
         self.picam_image_filename = "imgs/pi_cam_img.jpg"
         # Distance sensor setup
         i2c = board.I2C()
@@ -21,9 +22,9 @@ class SensorProcessing:
         self.distance_sensor.start_ranging()
 
 
-    def getSensorData(self, picamera):
+    def getSensorData(self):
         # Take picture
-        picamera.capture_file(self.picam_image_filename)
+        self.cam.capture_file(self.picam_image_filename)
 
         if self.distance_sensor.data_ready:
             distance = self.distance_sensor.distance

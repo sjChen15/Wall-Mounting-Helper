@@ -18,7 +18,7 @@ class ClientSocket:
     def sendImageToServer(self, filename):
         myfile = open(filename, 'rb')
         bytes = myfile.read()
-        self.sock.sendall(bytes)
+        self.sock.sendto(bytes,len(bytes))
         myfile.close()
         print(f'LENGTH OF SENT IMAGE IS {len(bytes)}')
         print(u'Image sent to Server Socket [UDP_SERVER_IP: ' + self.UDP_SERVER_IP + ', UDP_SERVER_PORT: ' + str(self.UDP_SERVER_PORT) + ' ]')

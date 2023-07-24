@@ -1,50 +1,71 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 function UploadPhotosPage() {
-  const [images, setImages] = useState([]);
-  const [dimensions, setDimensions] = useState({ length: '', width: '' });
+  const [photo, setPhoto] = useState(null);
+  const [length, setLength] = useState("");
+  const [width, setWidth] = useState("");
+  const [downloadCount, setDownloadCount] = useState(0);
 
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-      setImages((prevImages) => [...prevImages, reader.result]);
-    };
-
-    if (file) {
-      reader.readAsDataURL(file);
-    }
+  const handlePhotoChange = (e) => {
+    const selectedPhoto = e.target.files[0];
+    setPhoto(selectedPhoto);
   };
 
-  const handleDimensionsChange = (event) => {
-    const { name, value } = event.target;
-    setDimensions((prevDimensions) => ({ ...prevDimensions, [name]: value }));
+  const handleLengthChange = (e) => {
+    setLength(e.target.value);
+  };
+
+  const handleWidthChange = (e) => {
+    setWidth(e.target.value);
+  };
+
+  const formatDownloadCount = (count) => {
+    return count.toString().padStart(3, "0");
+  };
+
+  const handleDownload = () => {
+    if (!photo || !length || !width) {
+      alert("Please upload a photo and enter length and width values.");
+      return;
+    }
+
+    const blob = new Blob([photo], { type: photo.type });
+    const url = URL.createObjectURL(blob);
+
+    const fileName = `${formatDownloadCount(
+      downloadCount
+    )}-L${length}-W${width}.${photo.type.split("/")[1]}`;
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    a.click();
+
+    URL.revokeObjectURL(url);
+
+    // Update the download count
+    setDownloadCount((prevCount) => prevCount + 1);
+
+    // Clear the UI fields after download
+    setPhoto(null);
+    setLength("");
+    setWidth("");
   };
 
   return (
     <div>
-      <h1>Upload Photos</h1>
-      <input type="file" accept="image/*" onChange={handleImageUpload} />
-      {images.map((image, index) => (
-        <div key={index}>
-          <img src={image} alt={`Decoration ${index}`} />
-          <input
-            type="text"
-            name="length"
-            placeholder="Length"
-            value={dimensions.length}
-            onChange={handleDimensionsChange}
-          />
-          <input
-            type="text"
-            name="width"
-            placeholder="Width"
-            value={dimensions.width}
-            onChange={handleDimensionsChange}
-          />
-        </div>
-      ))}
+      <input type="file" accept="image/*" onChange={handlePhotoChange} />
+      <br />
+      <label>
+        Length:
+        <input type="number" value={length} onChange={handleLengthChange} />
+      </label>
+      <br />
+      <label>
+        Width:
+        <input type="number" value={width} onChange={handleWidthChange} />
+      </label>
+      <br />
+      <button onClick={handleDownload}>Submit</button>
     </div>
   );
 }

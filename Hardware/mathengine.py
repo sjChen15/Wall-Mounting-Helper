@@ -160,31 +160,33 @@ def find_corners_from_ref(ref_img_path):
 
 # locate_green_quadrilateral("test2.png")
 
-ref_img_path = "test2.png"
 
-ref_image = cv2.imread(ref_img_path)
+def unskew_img():
+    ref_img_path = "imgs/pi_cam_img.jpg"
 
-corners = find_corners_from_ref(ref_img_path)
-M, M_inv = find_transform_from_corners(corners)
+    ref_image = cv2.imread(ref_img_path)
 
-rows, cols, ch = ref_image.shape
-dst = cv2.warpAffine(ref_image, M, (cols, rows))
+    corners = find_corners_from_ref(ref_img_path)
+    M, M_inv = find_transform_from_corners(corners)
 
-user_image = cv2.imread("UserImage.png")
+    rows, cols, ch = ref_image.shape
+    dst = cv2.warpAffine(ref_image, M, (cols, rows))
 
-# zoomed_image = zoom_at(user_image, 1)
+    user_image = cv2.imread("imgs/UserImage.png")
 
-# cv2.imshow("zoom", zoomed_image)
+    # zoomed_image = zoom_at(user_image, 1)
 
-rows2, cols2, ch2 = user_image.shape
-skew = cv2.warpAffine(user_image, M_inv, (cols2, rows2))
+    # cv2.imshow("zoom", zoomed_image)
 
-# show image
-# cv2.imshow("Res", dst)
-# cv2.imshow("user", skew)
-# cv2.waitKey(0)
+    rows2, cols2, ch2 = user_image.shape
+    skew = cv2.warpAffine(user_image, M_inv, (cols2, rows2))
 
-cv2.imwrite("processed_img.png", skew)
+    # show image
+    # cv2.imshow("Res", dst)
+    # cv2.imshow("user", skew)
+    # cv2.waitKey(0)
+
+    cv2.imwrite("imgs_to_send/processed.png", skew)
 
 
 def process_image(dist, x_tilt, y_tilt, ref_img_path, user_img_path):

@@ -11,7 +11,7 @@ class ServerSocket:
     def __init__(self, ip, port):
         self.UDP_IP = ip
         self.UDP_PORT = port
-        self.picam_image_filename ="imgs/pi_cam_img.jpg"
+        self.picam_image_filename ="imgs_to_send/pi_cam_img.jpg"
         self.socketOpen()
     
     def socketOpen(self):

@@ -37,6 +37,7 @@ vert_rect = pygame.Rect(CENTER_X-2,CENTER_Y-8,4,16)
 hori_rect = pygame.Rect(CENTER_X-8,CENTER_Y-2,16,4)
 
 #image from computer
+img_filename = "imgs_received/received_image.jpg"
 img = ""
 
 def cleanup():
@@ -45,7 +46,7 @@ def cleanup():
     picam.close()
 
 
-latest_filename = "" #filename of the last pulled image    
+latest_time = 0
 run = True
 while run:
     #Fill display screen
@@ -65,11 +66,10 @@ while run:
     #every loop pull most recent picture that's been saved abd display
     pygame.display.update()
     
-    
-    folder_most_recent_file = max(glob.glob('/home/fydp/Documents/Wall-Mounting-Helper/Hardware/imgs/*'), key=os.path.getmtime)
-    if len(os.listdir('/home/fydp/Documents/Wall-Mounting-Helper/Hardware/imgs')) != 0 and folder_most_recent_file != latest_filename:
-        img = pygame.image.load(folder_most_recent_file)
-        latest_filename = folder_most_recent_file
+    file_time = os.path.getctime(img_filename)
+    if latest_time < file_time:
+        img = pygame.image.load(img_filename)
+        latest_time = file_time
         
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

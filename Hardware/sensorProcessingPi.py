@@ -17,7 +17,7 @@ class SensorProcessing:
 
         #PiCamera Setup
         self.cam = picamera
-        self.picam_image_filename = "imgs/pi_cam_img.jpg"
+        self.picam_image_filename = "imgs_to_send/pi_cam_img.jpg"
         # Distance sensor setup
         i2c = board.I2C()
         self.distance_sensor = adafruit_vl53l1x.VL53L1X(i2c)

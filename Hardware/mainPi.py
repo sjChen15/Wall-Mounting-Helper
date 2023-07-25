@@ -27,8 +27,8 @@ sensors = sensorProcessingPi.SensorProcessing(picam)
 
 #Test display
 font = pygame.font.Font(pygame.font.get_default_font(), 32)
-d = sensors.getSensorData()
-text = font.render(f'{d}', True, BLACK)
+d,a = sensors.getSensorData()
+text = font.render(f'{d} {a}', True, BLACK)
 textRect = text.get_rect()
 textRect.center = (CENTER_X, CENTER_Y - 200)
 
@@ -77,8 +77,12 @@ while run:
             run = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE: #if space pressed send data over UDP
-                d = sensors.sendDataOverUDP()
-                text = font.render(f'{d}', True, BLACK)
+                #take a picture
+                picam.capture_file("test-python.jpg")
+                
+                d,a = sensors.sendDataOverUDP()
+                text = font.render(f'{d} {a}', True, BLACK)
+
             else:    
                 pygame.quit()
                 run = False

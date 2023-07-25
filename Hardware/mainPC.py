@@ -1,20 +1,30 @@
 #main program to run on PC
-import TCPServer
+import TCPClient
 import UDPServer
-import cv2
+import keyboard
 
-TCP_IP = '10.0.0.47'
-TCP_PORT = 12345 
+PC_IP = '10.0.0.47'
+PI_IP = '10.0.0.86'
+TCP_CAMERA_PORT = 12345 
+TCP_SKEW_PORT = 9999
 UDP_PORT = 65000
 #tcp_server = TCPServer.ServerSocket(TCP_IP, TCP_PORT)
-udp_server = UDPServer.ServerSocket(TCP_IP, UDP_PORT)
-
-
+sensors_udp_server = UDPServer.ServerSocket(PC_IP, UDP_PORT)
+skewed_image_tcp_client = TCPClient.ClientSocket(PI_IP, TCP_SKEW_PORT)
+skewed_image_filename = "imgs_to_send/squink.png"
+count = 1
 try:
     while True:
-        udp_server.waitForMessage()
-        cv2.waitKey(1)
+        if count%5 == 0: #send picture on space
+            skewed_image_tcp_client.sendImage(skewed_image_filename)
+            count = 0
+            break
+
+        sensors_udp_server.waitForMessage()
+        
+        count += 1
+
 except Exception as e:
     print(e)
 
-udp_server.closeSocket()
+sensors_udp_server.closeSocket()

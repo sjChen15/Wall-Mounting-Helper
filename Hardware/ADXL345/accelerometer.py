@@ -1,21 +1,11 @@
 import time
-import spidev
+import board
+import busio
 import adafruit_adxl34x
 
-# initiaize SPI connection
-spi_bus = 0
-spi_device = 0
-spi = spidev.SpiDev()
-spi.open(spi_bus, spi_device)
-spi.max_speed_hz = 1000000
+i2c = busio.I2C(board.SCL, board.SDA)
+accelerometer = adafruit_adxl34x.ADXL345(i2c)
 
-# initialize accelerometer
-accelerometer = adafruit_adxl34x.ADXL345()
-
-try:
-	while True:
-		print("%f %f %f"%accelerometer.acceleration)
-		time.sleep(1)
-except KeyboardInterrupt:
-	spi.close()
-	quit()
+while True:
+    print("%f %f %f"%accelerometer.acceleration)
+    time.sleep(1)

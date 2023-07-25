@@ -11,6 +11,7 @@ class ServerSocket:
     def __init__(self, ip, port):
         self.UDP_IP = ip
         self.UDP_PORT = port
+        self.picam_image_filename ="imgs_to_send/pi_cam_img.jpg"
         self.socketOpen()
     
     def socketOpen(self):
@@ -20,7 +21,7 @@ class ServerSocket:
         #non-blocking
         self.sock.setblocking(0)            
 
-        #timeout
+        #Time out after 2 seconds
         self.sock.settimeout(2)
         print(u'Server socket [ UDP_IP: ' + self.UDP_IP + ', UDP_PORT: ' + str(self.UDP_PORT) + ' ] is open')
 
@@ -45,6 +46,5 @@ class ServerSocket:
         else:
             # got a message, do something :)
             print(f'Received {len(message)} from {address}')
-            x, y, z = unpack('3f', message)
-            print(f'X: {x}, Y: {y}, Z: {z}')
-
+            d = unpack('1f', message)
+            print(f'Distance = {d} cm')

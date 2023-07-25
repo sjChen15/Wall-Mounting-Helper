@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import Button from "react-bootstrap/Button";
 
 function SpecifyWallDimensionsPage() {
-  const [wallDimensions, setWallDimensions] = useState({ length: '', width: '' });
+  const [wallDimensions, setWallDimensions] = useState({
+    length: "",
+    width: "",
+  });
 
   const handleDimensionsChange = (event) => {
     const { name, value } = event.target;
-    setWallDimensions((prevDimensions) => ({ ...prevDimensions, [name]: value }));
+    setWallDimensions((prevDimensions) => ({
+      ...prevDimensions,
+      [name]: value,
+    }));
   };
 
   return (
@@ -25,6 +32,7 @@ function SpecifyWallDimensionsPage() {
         value={wallDimensions.width}
         onChange={handleDimensionsChange}
       />
+      <Button variant="secondary">Submit</Button>{" "}
     </div>
   );
 }

@@ -82,7 +82,7 @@ while run:
                 picam.capture_file("test-python.jpg")
                 
                 d,a = sensors.sendDataOverUDP()
-                text = font.render(f'{d} {a}', True, BLACK)
+                text = font.render(f'{d} {a}', True, WHITE)
 
             else:    
                 pygame.quit()

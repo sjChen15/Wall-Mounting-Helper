@@ -21,6 +21,9 @@ class SensorProcessing:
         # Distance sensor setup
         i2c = board.I2C()
         self.distance_sensor = adafruit_vl53l1x.VL53L1X(i2c)
+        # self.distance_sensor.distance_mode = 2
+        #self.distance_sensor.timing_budget = 500
+        #self.distance_sensor.sampling_rate = 5
         self.distance_sensor.start_ranging()
         
         #accelerometer steup
@@ -36,7 +39,7 @@ class SensorProcessing:
             distance = self.distance_sensor.distance
             if distance == None:
                 print("Nonetype distance, try again")
-                return 0, (0,0,0)
+                return 0, self.accelerometer.acceleration
             print("Distance: {0} cm, {1: .2f} in".format(distance, distance*0.394))
             self.distance_sensor.clear_interrupt()
             

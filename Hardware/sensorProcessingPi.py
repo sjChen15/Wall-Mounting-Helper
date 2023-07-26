@@ -32,27 +32,28 @@ class SensorProcessing:
         # Take picture
         self.cam.capture_file(self.picam_image_filename)
 
-        if self.distance_sensor.data_ready:
+        if self.distance_sensor.data_ready and self.accelerometer.acceleration:
             distance = self.distance_sensor.distance
             if distance == None:
                 print("Nonetype distance, try again")
-                return 0
+                return 0, (0,0,0)
             print("Distance: {0} cm, {1: .2f} in".format(distance, distance*0.394))
             self.distance_sensor.clear_interrupt()
             
-        return distance, self.accelerometer.acceleration
+            return distance, self.accelerometer.acceleration
+        return 0, (0,0,0)
 
     def sendDataOverUDP(self):
-        d = self.getSensorData()
+        d,a = self.getSensorData()
 
         #Send sensor readings
-        message = pack('1f', d)
+        message = pack('4f', d,a[0],a[1],a[2])
         self.udp_client.sendMessageToServer(message)
 
         #Send picture
         self.tcp_client.sendImage(self.picam_image_filename)
 
-        return d
+        return d,a
 
     def closeSocket(self):
         self.udp_client.closeSocket()

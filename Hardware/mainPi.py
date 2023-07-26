@@ -17,6 +17,7 @@ WIDTH, HEIGHT = screen.get_size()
 CENTER_X, CENTER_Y = WIDTH // 2, HEIGHT // 2
 
 #Camera
+#TODO: Try catch here?
 picam = Picamera2()
 config = picam.create_preview_configuration()
 picam.configure(config)
@@ -28,9 +29,9 @@ sensors = sensorProcessingPi.SensorProcessing(picam)
 #Test display
 font = pygame.font.Font(pygame.font.get_default_font(), 32)
 d,a = sensors.getSensorData()
-text = font.render(f'{d} {a}', True, BLACK)
+text = font.render(f'{d} {a}', True, WHITE)
 textRect = text.get_rect()
-textRect.center = (CENTER_X, CENTER_Y - 200)
+textRect.center = (CENTER_X, 100)
 
 #Cross in center
 vert_rect = pygame.Rect(CENTER_X-2,CENTER_Y-8,4,16)
@@ -54,7 +55,7 @@ while run:
 
     #Picture
     if img != "":
-        screen.blit(img, (100,100))
+        screen.blit(img, (0,0))
     #Test text
     screen.blit(text, textRect)
 

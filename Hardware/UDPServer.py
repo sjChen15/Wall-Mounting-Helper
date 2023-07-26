@@ -46,5 +46,6 @@ class ServerSocket:
         else:
             # got a message, do something :)
             print(f'Received {len(message)} from {address}')
-            d = unpack('1f', message)
-            print(f'Distance = {d} cm')
+            a=[0,0,0]
+            d,a[0],a[1],a[2] = unpack('4f', message)
+            print(f'Distance = {d} cm, Accelerometer = {a}')

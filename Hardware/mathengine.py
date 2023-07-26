@@ -90,7 +90,7 @@ def find_transform_from_corners(corners):
 
     # pts1 = np.float32([corners[0][0], corners[1][0], corners[2][0]])
 
-    pts2 = np.float32([[0, 0], [200, 0], [0, 200]])
+    pts2 = np.float32([[0, 0], [50, 0], [0, 50]])
 
     M = cv2.getAffineTransform(pts1, pts2)
     M_inverse = cv2.getAffineTransform(pts2, pts1)
@@ -108,7 +108,7 @@ def find_corners_from_ref(ref_img_path):
     max_poly_area = 0
 
     # Step 2: Preprocess the image
-    blurred = cv2.GaussianBlur(image, (5, 5), 0)
+    blurred = image #cv2.GaussianBlur(image, (5, 5), 0)
     hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
 
     # Define the lower and upper bounds for the green color
@@ -121,11 +121,14 @@ def find_corners_from_ref(ref_img_path):
 
     # Step 3: Find contours
     mask = cv2.inRange(hsv, lower_green, upper_green)
+
+    #cv2.imshow("mask", mask)
+
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     # Step 4: Filter green quadrilaterals
     for contour in contours:
-        epsilon = 0.02 * cv2.arcLength(contour, True)
+        epsilon = 0.1 * cv2.arcLength(contour, True)
         approx = cv2.approxPolyDP(contour, epsilon, True)
         if len(approx) == 4:  # Check if the contour has four corners (a quadrilateral)
             # Get the average color of the contour to check if it's green
@@ -139,17 +142,18 @@ def find_corners_from_ref(ref_img_path):
 
             color = np.mean(hsv_img[y : y + 5, x : x + 5], axis=(0, 1))
 
-            if is_green(color):
+            if True:
                 # Step 5: Draw bounding box around the green quadrilateral
                 cv2.drawContours(image, [approx], 0, (255, 0, 0), 2)
 
                 if area > max_poly_area:
+                    max_poly_area = area
                     corners = approx
                 print(approx)
 
     # Display the result
-    # cv2.imshow("Green Quadrilateral Detection", image)
-    # cv2.waitKey(0)
+    #cv2.imshow("Green Quadrilateral Detection", image)
+    #cv2.waitKey(0)
 
     print(corners)
 
@@ -162,7 +166,7 @@ def find_corners_from_ref(ref_img_path):
 
 
 def unskew_img():
-    ref_img_path = "imgs/pi_cam_img.jpg"
+    ref_img_path = "C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/Hardware/imgs_received/pi_cam_img.jpg"
 
     ref_image = cv2.imread(ref_img_path)
 
@@ -172,7 +176,7 @@ def unskew_img():
     rows, cols, ch = ref_image.shape
     dst = cv2.warpAffine(ref_image, M, (cols, rows))
 
-    user_image = cv2.imread("imgs/UserImage.png")
+    user_image = cv2.imread("C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/Hardware/imgs/UserImage.png")
 
     # zoomed_image = zoom_at(user_image, 1)
 
@@ -186,7 +190,9 @@ def unskew_img():
     # cv2.imshow("user", skew)
     # cv2.waitKey(0)
 
-    cv2.imwrite("imgs_to_send/processed.png", skew)
+    cv2.imwrite("C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/Hardware/imgs_to_send/processed.png", skew)
+
+unskew_img()
 
 
 def process_image(dist, x_tilt, y_tilt, ref_img_path, user_img_path):

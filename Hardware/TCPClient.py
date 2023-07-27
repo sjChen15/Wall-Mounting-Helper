@@ -11,7 +11,7 @@ class ClientSocket:
     def sendImage(self, image_path):
         # Create a TCP socket
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+        client_socket.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
         client_socket.settimeout(1)
         
         #Try sedning image

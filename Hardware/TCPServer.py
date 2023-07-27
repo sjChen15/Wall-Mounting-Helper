@@ -38,6 +38,5 @@ class ServerSocket:
             file.write(image_data)
             print(f"Image saved to: {save_path}")
 
-
-        self.client_socket.close()
-        print(f"Client socket for port {self.TCP_PORT} closed")
+        self.sock.close()
+        print(f"Server socket for port {self.TCP_PORT} closed")

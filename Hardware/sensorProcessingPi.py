@@ -46,7 +46,7 @@ class SensorProcessing:
             return distance, self.accelerometer.acceleration
         return 0, (0,0,0)
 
-    def sendDataOverUDP(self):
+    def sendDataToPC(self):
         d,a = self.getSensorData()
 
         #Send sensor readings

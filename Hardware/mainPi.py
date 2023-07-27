@@ -46,8 +46,8 @@ def cleanup():
     sensors.closeSocket()
     picam.close()
 
-
-latest_time = 0
+sensor_loop_count = 0
+last_time = 0
 run = True
 while run:
     #Fill display screen
@@ -55,37 +55,42 @@ while run:
 
     #Picture
     if img != "":
-        screen.blit(img, (0,0))
+        screen.blit(img, (CENTER_X-img.get_width()//2,CENTER_Y-img.get_height()//2))
     #Test text
     screen.blit(text, textRect)
-
-    #Crosshair
-    pygame.draw.rect(screen, RED, vert_rect)
-    pygame.draw.rect(screen, RED, hori_rect)
     
-    
-    #every loop pull most recent picture that's been saved abd display
     pygame.display.update()
     
     file_time = os.path.getctime(img_filename)
-    if latest_time < file_time:
+    if last_time < file_time:
+        print("got a more recent pic")
         img = pygame.image.load(img_filename)
-        latest_time = file_time
+        last_time = file_time
+    
+    #send data over every 50 loops
+    if sensor_loop_count == 200:
+        sensor_loop_count = 0
+                
+        d,a = sensors.sendDataToPC()
+        text = font.render(f'{d} {a}', True, WHITE)
+        
+    else:
+        sensor_loop_count += 1
         
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             run = False
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE: #if space pressed send data over UDP
+            #if event.key == pygame.K_SPACE: #if space pressed send data over UDP
                 #take a picture
-                picam.capture_file("test-python.jpg")
+               # picam.capture_file("test-python.jpg")
                 
-                d,a = sensors.sendDataOverUDP()
-                text = font.render(f'{d} {a}', True, WHITE)
+              #  d,a = sensors.sendDataToPC()
+             #   text = font.render(f'{d} {a}', True, WHITE)
 
-            else:    
-                pygame.quit()
-                run = False
+            #else:    
+            pygame.quit()
+            run = False
 
 

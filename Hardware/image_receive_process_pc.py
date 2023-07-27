@@ -11,7 +11,7 @@ save_path = ("C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/Hardware/im
 
 try:
     while True:
-        sensor_server.socketOpenAndReceiveImage(save_path)
+        sensor_server.receiveImage(save_path)
 
 except KeyboardInterrupt:
     sensor_server.closeSocket()

@@ -4,21 +4,21 @@ import socket
 
 class ClientSocket: 
     def __init__(self, ip, port):
-        self.TCP_SERVER_IP = ip
-        self.TCP_SERVER_PORT = port
+        self.TCP_IP = ip
+        self.TCP_PORT = port
         self.connectCount = 0
 
     def sendImage(self, image_path):
         # Create a TCP socket
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+        client_socket.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
         client_socket.settimeout(1)
         
         #Try sedning image
         try:
             # Connect to the server
-            client_socket.connect((self.TCP_SERVER_IP, self.TCP_SERVER_PORT))
-            print(u'Client socket is connected with Server socket [ TCP_SERVER_IP: ' + self.TCP_SERVER_IP + ', TCP_SERVER_PORT: ' + str(self.TCP_SERVER_PORT) + ' ]')
+            client_socket.connect((self.TCP_IP, self.TCP_PORT))
+            print(u'Client socket is connected with Server socket [ TCP_IP: ' + self.TCP_IP + ', TCP_PORT: ' + str(self.TCP_PORT) + ' ]')
 
             # Read the image data
             with open(image_path, "rb") as file:
@@ -32,3 +32,4 @@ class ClientSocket:
             
         # Close the socket
         client_socket.close()
+        print(u'Client socket [ TCP_IP: ' + self.TCP_IP + ', TCP_PORT: ' + str(self.TCP_PORT) + ' ] is CLOSED')

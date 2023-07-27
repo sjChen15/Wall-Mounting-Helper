@@ -11,7 +11,7 @@ save_path = ("imgs_received/received_image.jpg")  # Specify the path to save the
 
 try:
     while True:
-        sensor_server.socketOpenAndReceiveImage(save_path)
+        sensor_server.receiveImage(save_path)
 
 except KeyboardInterrupt:
     sensor_server.closeSocket()

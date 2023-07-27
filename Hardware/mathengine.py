@@ -1,7 +1,7 @@
 import socket
 import cv2
 import numpy as np
-
+import os
 # Save sensor data
 
 # Save picture data
@@ -176,7 +176,14 @@ def unskew_img():
     rows, cols, ch = ref_image.shape
     dst = cv2.warpAffine(ref_image, M, (cols, rows))
 
-    user_image = cv2.imread("C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/Hardware/imgs/UserImage.png")
+    #GET LATEST PICTURE FROM FOLDER
+    dirpath = "C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/Hardware/imgs"
+    valid_files = [os.path.join(dirpath, filename) for filename in os.listdir(dirpath)]
+
+
+    user_image_path = max(valid_files, key=os.path.getmtime) 
+    
+    user_image = cv2.imread(user_image_path)
 
     # zoomed_image = zoom_at(user_image, 1)
 
@@ -192,7 +199,7 @@ def unskew_img():
 
     cv2.imwrite("C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/Hardware/imgs_to_send/processed.png", skew)
 
-unskew_img()
+#unskew_img()
 
 
 def process_image(dist, x_tilt, y_tilt, ref_img_path, user_img_path):

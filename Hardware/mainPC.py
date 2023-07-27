@@ -17,7 +17,7 @@ skewed_image_filename = "C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/
 count = 1
 try:
     while True:
-        if count % 5 == 0:  # send picture on space
+        if count % 3 == 0:  # send picture on space
 
             math_engine.unskew_img()
 
@@ -25,7 +25,6 @@ try:
 
             skewed_image_tcp_client.sendImage(skewed_image_filename)
             count = 0
-            time.sleep(5)
 
         sensors_udp_server.waitForMessage()
         count += 1

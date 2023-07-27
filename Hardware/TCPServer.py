@@ -14,6 +14,9 @@ class ServerSocket:
 
     def socketOpenAndReceiveImage(self, save_path):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        
+        #reuse socket in TIME_WAIT state
+        self.sock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
         self.sock.bind((self.TCP_IP, self.TCP_PORT))
         # #non-blocking
         # self.sock.setblocking(0)            
@@ -38,5 +41,6 @@ class ServerSocket:
             file.write(image_data)
             print(f"Image saved to: {save_path}")
 
-        self.sock.close()
+        
+        self.client_socket.close()
         print(f"Server socket for port {self.TCP_PORT} closed")

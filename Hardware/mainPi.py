@@ -51,7 +51,7 @@ latest_time = 0
 run = True
 while run:
     #Fill display screen
-    screen.fill(WHITE) #White background
+    screen.fill(BLACK) #White background
 
     #Picture
     if img != "":

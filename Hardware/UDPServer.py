@@ -22,7 +22,7 @@ class ServerSocket:
         self.sock.setblocking(0)            
 
         #Time out after 2 seconds
-        self.sock.settimeout(2)
+        self.sock.settimeout(1)
         print(u'Server socket [ UDP_IP: ' + self.UDP_IP + ', UDP_PORT: ' + str(self.UDP_PORT) + ' ] is open')
 
     def closeSocket(self):
@@ -43,9 +43,11 @@ class ServerSocket:
             else:
                 # a "real" error occurred
                 print (e)
+            return None, [0,0,0]
         else:
             # got a message, do something :)
             print(f'Received {len(message)} from {address}')
             a=[0,0,0]
             d,a[0],a[1],a[2] = unpack('4f', message)
             print(f'Distance = {d} cm, Accelerometer = {a}')
+            return d,a

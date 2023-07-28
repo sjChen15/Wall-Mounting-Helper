@@ -15,18 +15,26 @@ sensors_udp_server = UDPServer.ServerSocket(PC_IP, UDP_PORT)
 skewed_image_tcp_client = TCPClient.ClientSocket(PI_IP, TCP_SKEW_PORT)
 skewed_image_filename = "C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/Hardware/imgs_to_send/processed.png"
 count = 1
+
+#params from UDP
+distance = 0 #in cm
+accelerometer = [] #[x,y,z]
 try:
     while True:
         if count % 5 == 0:  # send picture on space
 
-            math_engine.unskew_img()
+            math_engine.unskew_img(distance, accelerometer)
 
             time.sleep(0.1)
 
             skewed_image_tcp_client.sendImage(skewed_image_filename)
             count = 0
 
-        sensors_udp_server.waitForMessage()
+        d,a = sensors_udp_server.waitForMessage()
+        if d != None:
+            distance = d
+            accelerometer = a
+
         count += 1
 
 except Exception as e:

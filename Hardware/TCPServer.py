@@ -19,7 +19,7 @@ class ServerSocket:
         # self.sock.settimeout(2)
 
     def closeSocket(self):
-        self.sock.close()
+        self.server_socket.close()
         print(u'Server socket [ TCP_IP: ' + self.TCP_IP + ', TCP_PORT: ' + str(self.TCP_PORT) + ' ] is close')
 
     def receiveImage(self, save_path):

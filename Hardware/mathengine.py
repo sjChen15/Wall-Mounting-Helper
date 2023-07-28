@@ -165,7 +165,7 @@ def find_corners_from_ref(ref_img_path):
 # locate_green_quadrilateral("test2.png")
 
 
-def unskew_img():
+def unskew_img(distance, accelerometer):
     ref_img_path = "C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/Hardware/imgs_received/pi_cam_img.jpg"
 
     ref_image = cv2.imread(ref_img_path)

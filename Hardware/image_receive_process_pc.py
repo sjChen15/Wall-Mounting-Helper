@@ -14,6 +14,8 @@ while True:
 
     except KeyboardInterrupt:
         sensor_server.closeSocket()
+        break
     except Exception as e:
         sensor_server.closeSocket()
+        break
 

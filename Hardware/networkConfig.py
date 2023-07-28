@@ -1,6 +1,6 @@
 # Config file for IPs and ports
 
-PC_IP = "1172.20.10.9"
+PC_IP = "172.20.10.9"
 PI_IP = "172.20.10.10"
 ALL_IP = "0.0.0.0"
 TCP_CAMERA_PORT = 12345

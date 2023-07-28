@@ -284,13 +284,16 @@ def unskew_img(distance, accelerometer):
     throw_ratio = 88/120
     width_on_wall = distance * 0.01 * throw_ratio #size is of width of projection 
 
-    if(width_on_wall ==0):
+    if(width_on_wall == 0):
         width_on_wall = 2
 
     # desired total size in m
     desired_size = 2 #workspace projected size
 
     zoom = desired_size / width_on_wall #scaling factory for whole image
+
+    print(distance)
+    print(zoom)
 
     zoomed_image = zoom_at(user_image, zoom)
 

@@ -7,7 +7,7 @@ import time
 from networkConfig import *
 
 # tcp_server = TCPServer.ServerSocket(TCP_IP, TCP_PORT)
-sensors_udp_server = UDPServer.ServerSocket(ALL_IP, UDP_PORT)
+sensors_udp_server = UDPServer.ServerSocket(PC_IP, UDP_PORT)
 skewed_image_tcp_client = TCPClient.ClientSocket(PI_IP, TCP_SKEW_PORT)
 skewed_image_filename = "C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/Hardware/imgs_to_send/processed.png"
 count = 1

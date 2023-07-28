@@ -2,11 +2,10 @@
 
 import numpy as np
 import TCPServer
+from networkConfig import *
 
-port = 9999
-ip = "0.0.0.0"
 # Bind the socket to a specific port
-sensor_server = TCPServer.ServerSocket(ip,port)
+sensor_server = TCPServer.ServerSocket(ALL_IP,TCP_SKEW_PORT)
 save_path = ("imgs_received/received_image.jpg")  # Specify the path to save the received image
 
 try:

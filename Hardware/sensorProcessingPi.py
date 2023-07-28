@@ -5,15 +5,13 @@ from time import sleep
 import random
 from struct import pack
 import board, time, busio, adafruit_vl53l1x, adafruit_adxl34x
+from networkConfig import *
 
-IP = '10.0.0.47'
-UDP_PORT = 65000
-TCP_PORT = 12345
 class SensorProcessing:
 
     def __init__(self, picamera):
-        self.udp_client = UDPClient.ClientSocket(IP,UDP_PORT)
-        self.tcp_client = TCPClient.ClientSocket(IP,TCP_PORT)
+        self.udp_client = UDPClient.ClientSocket(PC_IP,UDP_PORT)
+        self.tcp_client = TCPClient.ClientSocket(PC_IP,TCP_CAMERA_PORT)
 
         #PiCamera Setup
         self.cam = picamera

@@ -22,7 +22,7 @@ def send_image(host, port, image_path):
 
 
 # Usage
-host = "10.0.0.86"  # Specify the server host
+host = "172.20.10.10"  # Specify the server host
 port = 9999  # Specify the server port
 #image_path = "C:\\Users\\shiji\\OneDrive\\Documents\\Wall-Mounting-Helper\\MathEngine\\img.png"  # Specify the path to the image file
 image_path = "C:\\Users\\shiji\\OneDrive\\Documents\\Wall-Mounting-Helper\\MathEngine\\SampleImage.png"

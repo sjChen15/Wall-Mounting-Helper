@@ -2,11 +2,10 @@
 
 import numpy as np
 import TCPServer
+from networkConfig import *
 
-port = 12345
-ip = "0.0.0.0"
 # Bind the socket to a specific port
-sensor_server = TCPServer.ServerSocket(ip,port)
+sensor_server = TCPServer.ServerSocket(ALL_IP,TCP_CAMERA_PORT)
 save_path = ("C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/Hardware/imgs_received/pi_cam_img.jpg")  # Specify the path to save the received image
 
 try:

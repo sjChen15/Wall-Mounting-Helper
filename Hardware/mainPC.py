@@ -13,8 +13,8 @@ skewed_image_filename = "C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/
 count = 1
 
 #params from UDP
-distance = 0 #in cm
-accelerometer = [] #[x,y,z]
+distance = 1 #in cm
+accelerometer = [1,1,1] #[x,y,z]
 try:
     while True:
         if count % 5 == 0:  # send picture on space

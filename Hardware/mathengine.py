@@ -167,7 +167,7 @@ def find_corners_from_ref(ref_img_path):
     # Step 3: Find contours
     mask = cv2.inRange(hsv, lower_green, upper_green)
 
-    cv2.imshow("mask", mask)
+    #cv2.imshow("mask", mask)
 
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -249,7 +249,7 @@ def unskew_img(distance, accelerometer):
     # get the length and width of the image from the file path
     usr_img_parse = usr_img_filename.split("-")
     print(usr_img_parse)
-    len_str = usr_img_parse[1][1:]
+    len_str = usr_img_parse[1][1:] # desired size of user image in cm
     wid_str = usr_img_parse[2][1:].split(".")[0]
 
     print(int(len_str))
@@ -258,11 +258,11 @@ def unskew_img(distance, accelerometer):
     background_img = cv2.imread(background_img_path)
     user_image = cv2.imread(user_image_path)
 
-    projector_width_unscaled = 2
+    projector_width_unscaled = 1
 
     # resize user image to desired width and height
     usr_img_width_px = int(1920 * ((int(wid_str) * 0.010) / 2.0))
-    usr_img_height_px = int(1080 * ((int(len_str) * 0.010) / 2.0))
+    usr_img_height_px = int(1080 * ((int(len_str) * 0.010) / (2.0*(1080/1920))))
 
     print(usr_img_width_px, usr_img_height_px)
 
@@ -281,17 +281,20 @@ def unskew_img(distance, accelerometer):
     # paste user image onto background grid
 
     # size of total projection
-    throw_ratio = 1.5
-    size = distance / throw_ratio
+    throw_ratio = 88/120
+    width_on_wall = distance * 0.01 * throw_ratio #size is of width of projection 
+
+    if(width_on_wall ==0):
+        width_on_wall = 2
 
     # desired total size in m
-    desired_size = 2
+    desired_size = 2 #workspace projected size
 
-    zoom = desired_size / size
+    zoom = desired_size / width_on_wall #scaling factory for whole image
 
     zoomed_image = zoom_at(user_image, zoom)
 
-    cv2.imshow("user", zoomed_image)
+    #cv2.imshow("user", zoomed_image)
 
     rows2, cols2, ch2 = user_image.shape
     # skew = cv2.warpAffine(user_image, M_inv, (cols2, rows2))
@@ -299,12 +302,12 @@ def unskew_img(distance, accelerometer):
     # show image
     # cv2.imshow("Res", dst)
     # cv2.imshow("user", skew)
-    cv2.waitKey(0)
+    #cv2.waitKey(0)
 
-    # cv2.imwrite(
-    #    "C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/Hardware/imgs_to_send/processed.png",
-    #    skew,
-    # )
+    cv2.imwrite(
+        "C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/Hardware/imgs_to_send/processed.png",
+        zoomed_image,
+    )
 
 
 # unskew_img(2, [0, 0, 0])

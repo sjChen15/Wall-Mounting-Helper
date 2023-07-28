@@ -21,8 +21,8 @@ pygame.init()
 
 #Create Window with custom title
 pygame.display.set_caption("Wall Mounting Helper")
-#screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-screen = pygame.display.set_mode((1200,800))
+screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+#screen = pygame.display.set_mode((1200,800))
 WIDTH, HEIGHT = screen.get_size()
 CENTER_X, CENTER_Y = WIDTH // 2, HEIGHT // 2
 

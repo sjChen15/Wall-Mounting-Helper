@@ -14,3 +14,5 @@ try:
 
 except KeyboardInterrupt:
     sensor_server.closeSocket()
+except Exception as e:
+    sensor_server.closeSocket()

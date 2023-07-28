@@ -1,16 +1,64 @@
 import socket
 import cv2
 import numpy as np
+
+
+import logging
+
 import os
+
+
+def get_filename_from_path(filepath):
+    # Use os.path.basename() to get the filename from the path
+    filename = os.path.basename(filepath)
+    return filename
+
+
+# add logging to math engine
+# Create a logger
+logger = logging.getLogger(__name__)
+
+
+# Set the logging level (choose from DEBUG, INFO, WARNING, ERROR, CRITICAL)
+logger.setLevel(logging.DEBUG)
+
+
+# Create a file handler to write log messages to a file
+file_handler = logging.FileHandler("math_engine.log")
+
+
+# Create a formatter to specify the log message format
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+file_handler.setFormatter(formatter)
+
+
+# Add the file handler to the logger
+logger.addHandler(file_handler)
+
+
+# Define ref square color
+lower_green = np.array(
+    [30, 80, 40]
+)  # Adjust this threshold based on your specific case
+upper_green = np.array(
+    [80, 255, 255]
+)  # Adjust this threshold based on your specific case
+
+
 # Save sensor data
+
 
 # Save picture data
 
+
 # Figure out transformations using it
+
 
 # Read the user image
 
+
 # Skew
+
 
 # Send the image to the pi
 
@@ -35,12 +83,12 @@ def is_green(color):
     print(color)
 
     if (
-        color[0] >= green_range_low[0]
-        and color[0] <= green_range_high[0]
-        and color[1] >= green_range_low[1]
-        and color[1] <= green_range_high[1]
-        and color[2] >= green_range_low[2]
-        and color[2] <= green_range_high[2]
+        color[0] >= lower_green[0]
+        and color[0] <= upper_green[0]
+        and color[1] >= lower_green[1]
+        and color[1] <= upper_green[1]
+        and color[2] >= lower_green[2]
+        and color[2] <= upper_green[2]
     ):
         return True
     return False
@@ -100,29 +148,26 @@ def find_transform_from_corners(corners):
 
 def find_corners_from_ref(ref_img_path):
     # Step 1: Read the image
-    image = cv2.imread(ref_img_path)
+    try:
+        image = cv2.imread(ref_img_path)
+    except cv2.error as e:
+        logger.error("Unable to read ref image")
 
     # corners
 
     corners = []
-    max_poly_area = 0
+    # set to be the minimum size of the green refrence square to avoid detecting small imperfections as
+    # valid reference polygons
+    max_poly_area = 100
 
     # Step 2: Preprocess the image
-    blurred = image #cv2.GaussianBlur(image, (5, 5), 0)
+    blurred = cv2.GaussianBlur(image, (5, 5), 0)
     hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
-
-    # Define the lower and upper bounds for the green color
-    lower_green = np.array(
-        [30, 80, 40]
-    )  # Adjust this threshold based on your specific case
-    upper_green = np.array(
-        [80, 255, 255]
-    )  # Adjust this threshold based on your specific case
 
     # Step 3: Find contours
     mask = cv2.inRange(hsv, lower_green, upper_green)
 
-    #cv2.imshow("mask", mask)
+    cv2.imshow("mask", mask)
 
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -152,8 +197,8 @@ def find_corners_from_ref(ref_img_path):
                 print(approx)
 
     # Display the result
-    #cv2.imshow("Green Quadrilateral Detection", image)
-    #cv2.waitKey(0)
+    cv2.imshow("Green Quadrilateral Detection", image)
+    cv2.waitKey(0)
 
     print(corners)
 
@@ -165,41 +210,104 @@ def find_corners_from_ref(ref_img_path):
 # locate_green_quadrilateral("test2.png")
 
 
+def find_transform_from_sensors(d, a):
+
+    return 0, 0
+
+
 def unskew_img(distance, accelerometer):
     ref_img_path = "C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/Hardware/imgs_received/pi_cam_img.jpg"
-
+    # ref_img_path = "imgs_to_send/pi_cam_img.jpg"
     ref_image = cv2.imread(ref_img_path)
 
-    corners = find_corners_from_ref(ref_img_path)
-    M, M_inv = find_transform_from_corners(corners)
+    # using corners for skew
+    # comment out the other skew algorithm to use it
+    # corners = find_corners_from_ref(ref_img_path)
+    # M, M_inv = find_transform_from_corners(corners)
+
+    # using distance and tilt for skew
+    M, M_inv = find_transform_from_sensors(distance, accelerometer)
 
     rows, cols, ch = ref_image.shape
-    dst = cv2.warpAffine(ref_image, M, (cols, rows))
+    # dst = cv2.warpAffine(ref_image, M, (cols, rows))
 
-    #GET LATEST PICTURE FROM FOLDER
+    # GET LATEST PICTURE FROM FOLDER
     dirpath = "C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/Hardware/imgs"
     valid_files = [os.path.join(dirpath, filename) for filename in os.listdir(dirpath)]
 
+    background_img_path = "C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/Hardware/misc_imgs/bg.png"
+    # background_img_path = "misc_imgs/bg.png"
 
-    user_image_path = max(valid_files, key=os.path.getmtime) 
-    
+    # user_image_path = "misc_imgs/10-L50-W80.png"
+
+    user_image_path = max(valid_files, key=os.path.getmtime)
+
+    usr_img_filename = get_filename_from_path(user_image_path)
+
+    # usr_img_filename = "10-L100-W200.png"
+
+    # get the length and width of the image from the file path
+    usr_img_parse = usr_img_filename.split("-")
+    print(usr_img_parse)
+    len_str = usr_img_parse[1][1:]
+    wid_str = usr_img_parse[2][1:].split(".")[0]
+
+    print(int(len_str))
+    print(wid_str)
+
+    background_img = cv2.imread(background_img_path)
     user_image = cv2.imread(user_image_path)
 
-    # zoomed_image = zoom_at(user_image, 1)
+    projector_width_unscaled = 2
 
-    # cv2.imshow("zoom", zoomed_image)
+    # resize user image to desired width and height
+    usr_img_width_px = int(1920 * ((int(wid_str) * 0.010) / 2.0))
+    usr_img_height_px = int(1080 * ((int(len_str) * 0.010) / 2.0))
+
+    print(usr_img_width_px, usr_img_height_px)
+
+    resized_img = cv2.resize(user_image, (usr_img_width_px, usr_img_height_px))
+
+    x_offset = (background_img.shape[1] - resized_img.shape[1]) // 2
+    y_offset = (background_img.shape[0] - resized_img.shape[0]) // 2
+
+    background_img[
+        y_offset : y_offset + resized_img.shape[0],
+        x_offset : x_offset + resized_img.shape[1],
+    ] = resized_img
+
+    user_image = background_img
+
+    # paste user image onto background grid
+
+    # size of total projection
+    throw_ratio = 1.5
+    size = distance / throw_ratio
+
+    # desired total size in m
+    desired_size = 2
+
+    zoom = desired_size / size
+
+    zoomed_image = zoom_at(user_image, zoom)
+
+    cv2.imshow("user", zoomed_image)
 
     rows2, cols2, ch2 = user_image.shape
-    skew = cv2.warpAffine(user_image, M_inv, (cols2, rows2))
+    # skew = cv2.warpAffine(user_image, M_inv, (cols2, rows2))
 
     # show image
     # cv2.imshow("Res", dst)
     # cv2.imshow("user", skew)
-    # cv2.waitKey(0)
+    cv2.waitKey(0)
 
-    cv2.imwrite("C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/Hardware/imgs_to_send/processed.png", skew)
+    # cv2.imwrite(
+    #    "C:/Users/shiji/OneDrive/Documents/Wall-Mounting-Helper/Hardware/imgs_to_send/processed.png",
+    #    skew,
+    # )
 
-#unskew_img()
+
+# unskew_img(2, [0, 0, 0])
 
 
 def process_image(dist, x_tilt, y_tilt, ref_img_path, user_img_path):

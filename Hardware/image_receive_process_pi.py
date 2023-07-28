@@ -8,11 +8,13 @@ from networkConfig import *
 sensor_server = TCPServer.ServerSocket(ALL_IP,TCP_SKEW_PORT)
 save_path = ("imgs_received/received_image.jpg")  # Specify the path to save the received image
 
-try:
-    while True:
+while True:
+    try:
         sensor_server.receiveImage(save_path)
 
-except KeyboardInterrupt:
-    sensor_server.closeSocket()
-except Exception as e:
-    sensor_server.closeSocket()
+    except KeyboardInterrupt:
+        sensor_server.closeSocket()
+        break
+    except Exception as e:
+        sensor_server.closeSocket()
+        break
